@@ -17,10 +17,21 @@ var getSubtitles = require('youtube-captions-scraper').getSubtitles;
 
 const finalPdfName = 'result.pdf';
 
+function getVideoId(link) {
+  let indexBeforeVideoId = link.indexOf("v=");
+  let firstIndexVideoId = indexBeforeVideoId + 2;
+  let lastIndexVideoId = indexBeforeVideoId + 13;
+  let completeVideoId = link.substring(firstIndexVideoId, lastIndexVideoId);
+  return completeVideoId;
+}
+
 app.post('/create-pdf', (req, res) => {
   // console.log(req.body.content);
+  //console.log(req.body);
+  let completeVideoId = getVideoId(req.body.link);
+  //console.log('complete video Id:', completeVideoId);
   getSubtitles({
-    videoID: req.body.content,
+    videoID: completeVideoId,
     lang: 'de',
   }).then(function(captions) {
     // console.log(captions);
