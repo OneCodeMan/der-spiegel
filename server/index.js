@@ -27,6 +27,30 @@ function getVideoId(link) {
   let completeVideoId = link.substring(firstIndexVideoId, lastIndexVideoId);
   return completeVideoId;
 }
+// TODO: Bloated AF. Clean up! This smells.
+function getWordFrequencyMap(words) {
+  let wordFrequency = {};
+  words.forEach(function (key) {
+    if (wordFrequency.hasOwnProperty(key)) {
+      wordFrequency[key]++;
+    } else {
+      wordFrequency[key] = 1;
+    }
+  });
+  // console.log(wordFrequency);
+  var orderedWordFrequency = [];
+  orderedWordFrequency = Object.keys(wordFrequency).map(function (key) {
+    return {
+      name: key,
+      total: wordFrequency[key]
+    };
+  });
+
+  orderedWordFrequency.sort(function (a, b) {
+    return b.total - a.total;
+  });
+  return orderedWordFrequency;
+}
 
 app.post('/create-pdf', (req, res) => {
   // console.log(req.body.content);
@@ -46,11 +70,15 @@ app.post('/create-pdf', (req, res) => {
           let textValuesFromCaptions = _.map(captions, 'text');
           // console.log(textValuesFromCaptions); // ['First caption', 'Second Caption', 'etc']
           let transcript = textValuesFromCaptions.join(' '); // First caption Second Caption etc
+          let transcriptAsArrayOfWords = transcript.split(" ");
+          let wordFrequency = getWordFrequencyMap(transcriptAsArrayOfWords);
+
           // console.log(transcript);
           let transcriptAsObject = {
             channel: video.raw.snippet.channelTitle,
             title: video.title, 
-            transcript: transcript 
+            transcript: transcript,
+            wordFrequency: wordFrequency, 
           };
           console.log(transcriptAsObject);
 
