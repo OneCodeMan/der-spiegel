@@ -64,7 +64,7 @@ app.post('/create-pdf', (req, res) => {
         //console.log(`The video's title is ${video.title}`);
         getSubtitles({
           videoID: completeVideoId,
-          lang: req.body.lang,
+          lang: req.body.lang.toLowerCase(),
         }).then(function(captions) {
           // console.log(captions);
           let textValuesFromCaptions = _.map(captions, 'text');
