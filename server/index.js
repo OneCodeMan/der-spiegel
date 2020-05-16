@@ -30,9 +30,10 @@ app.post('/create-pdf', (req, res) => {
   //console.log(req.body);
   let completeVideoId = getVideoId(req.body.link);
   //console.log('complete video Id:', completeVideoId);
+  console.log('request body in /create-pdf:', req.body);
   getSubtitles({
     videoID: completeVideoId,
-    lang: 'de',
+    lang: req.body.lang,
   }).then(function(captions) {
     // console.log(captions);
     let textValuesFromCaptions = _.map(captions, 'text');
