@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 const pdf = require('html-pdf');
 const cors = require('cors');
 const _ = require('lodash');
+const YouTube = require('simple-youtube-api');
+const apiKey = require('./secrets');
+const youtube = new YouTube(apiKey.apiKey);
 
 const app = express();
 const pdfTemplate = require('./documents');
@@ -31,23 +34,35 @@ app.post('/create-pdf', (req, res) => {
   let completeVideoId = getVideoId(req.body.link);
   //console.log('complete video Id:', completeVideoId);
   console.log('request body in /create-pdf:', req.body);
-  getSubtitles({
-    videoID: completeVideoId,
-    lang: req.body.lang,
-  }).then(function(captions) {
-    // console.log(captions);
-    let textValuesFromCaptions = _.map(captions, 'text');
-    // console.log(textValuesFromCaptions); // ['First caption', 'Second Caption', 'etc']
-    let transcript = textValuesFromCaptions.join(' '); // First caption Second Caption etc
-    // console.log(transcript);
-    let transcriptAsObject = { transcript: transcript };
-    pdf.create(pdfTemplate(transcriptAsObject), {}).toFile(finalPdfName, (err) => {
-      if(err) {
-          res.send(Promise.reject());
-      }
-      res.send(Promise.resolve());
-    });
-  });
+
+    youtube.getVideo(req.body.link)
+    .then(video => {
+        //console.log(`The video's title is ${video.title}`);
+        getSubtitles({
+          videoID: completeVideoId,
+          lang: req.body.lang,
+        }).then(function(captions) {
+          // console.log(captions);
+          let textValuesFromCaptions = _.map(captions, 'text');
+          // console.log(textValuesFromCaptions); // ['First caption', 'Second Caption', 'etc']
+          let transcript = textValuesFromCaptions.join(' '); // First caption Second Caption etc
+          // console.log(transcript);
+          let transcriptAsObject = {
+            channel: video.raw.snippet.channelTitle,
+            title: video.title, 
+            transcript: transcript 
+          };
+          console.log(transcriptAsObject);
+
+          pdf.create(pdfTemplate(transcriptAsObject), {}).toFile(finalPdfName, (err) => {
+            if(err) {
+                res.send(Promise.reject());
+            }
+            res.send(Promise.resolve());
+          });
+        });
+    })
+    .catch(console.log);
   
 });
 
