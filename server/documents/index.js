@@ -1,5 +1,5 @@
 module.exports = ({ transcript }) => {
-    const today = new Date();
+
 return `
     <!doctype html>
     <html>
