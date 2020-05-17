@@ -3,6 +3,7 @@ Sample URLs:
 https://www.youtube.com/watch?v=fWaHN7q8Cow
 https://www.youtube.com/watch?v=Hk8tr01_jU4
 https://www.youtube.com/watch?v=03EcKq3EYbs
+https://www.youtube.com/watch?v=xd74RhWVZsA
 */
 
 import React, { Component } from 'react';
@@ -61,6 +62,10 @@ const styles = StyleSheet.create({
     outline: 'none'
   },
 
+  buttonDisabled: {
+    backgroundColor: 'gray'
+  },
+
   infoContainer: {
     margin: '0 auto',
     color: '#FFFFFC',
@@ -89,7 +94,7 @@ const styles = StyleSheet.create({
 class App extends Component {
   state = {
     link: '',
-    lang: '',
+    lang: 'de',
     // targets: [],
   }
 
@@ -108,12 +113,16 @@ class App extends Component {
 
   createAndDownloadPdf = () => {
     axios.post('/create-pdf', this.state)
+      .catch(err => console.log('error hit: ', err))
       .then(() => axios.get('fetch-pdf', { responseType: 'blob' }))
       .then((res) => {
         const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
         saveAs(pdfBlob, 'newPdf.pdf');
       })
+      .then(() => console.log('success brotha'))
   }
+
+
 
   render() {
     return(
@@ -124,7 +133,7 @@ class App extends Component {
         <div className={css(styles.inputContainer)}>
           <input type="text" placeholder="link" name="link" className={css(styles.linkInput)} onChange={this.handleChange} />
           <input type="text" placeholder="lang" name="lang" value={this.state.lang} maxLength="2" className={css(styles.langInput)} onChange={this.handleChange} />
-          <button onClick={this.createAndDownloadPdf} className={css(styles.button)}>
+          <button onClick={this.createAndDownloadPdf} className={css(styles.button)} disabled={!this.state.link.length}>
             Download PDF
           </button>
         </div>
