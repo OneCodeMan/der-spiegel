@@ -51,12 +51,12 @@ router.post('/create-pdf', (req, res) => {
             channel: video.raw.snippet.channelTitle,
             title: video.title, 
             transcript: transcript,
-            wordFrequency: wordFrequency, 
+            // wordFrequency: wordFrequency, 
         };
-        console.log(transcriptAsObject)
+        console.log(transcriptAsObject);
         // console.log(transcriptAsObject);
 
-        pdf.create(pdfTemplate(transcriptAsObject), {}).toFile(finalPdfName, (err) => {
+        pdf.create(pdfTemplate(transcriptAsObject), {}).toFile(`routes/api/${finalPdfName}`, (err) => {
             if(err) {
                 res.send(Promise.reject());
             }
@@ -68,7 +68,8 @@ router.post('/create-pdf', (req, res) => {
 });
   
 router.get('/fetch-pdf', (req, res) => {
-    res.sendFile(`${__dirname}/${finalPdfName}`);
+    let fileLocation = `${__dirname}/${finalPdfName}`;
+    res.sendFile(fileLocation);
 });
   
 module.exports = router;
