@@ -1,4 +1,4 @@
-module.exports = ({ title, channel, transcript }) => {
+module.exports = ({ title, channel, transcript, wordFrequency }) => {
 
 return `
     <!doctype html>
@@ -8,8 +8,29 @@ return `
           <title>${channel} - ${title}</title>
           <style>
             .container {
-               padding: 15px;
+               padding: 0px 12px 0px 12px;
             }
+
+            .title-name {
+               text-align: center;
+            }
+
+            .channel-name {
+               text-align: center;
+            }
+            
+            .transcript-text {
+               font-size: 20px;
+               padding: 0px 20px 0px 20px;
+            }
+
+            table, th, td {
+               border: 1px solid black;
+               border-collapse: collapse;
+             }
+             th, td {
+               padding: 15px;
+             }
           </style>
        </head>
        <body>

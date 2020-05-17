@@ -10,11 +10,13 @@ import axios from 'axios';
 import { saveAs } from 'file-saver'; 
 import { StyleSheet, css } from 'aphrodite';
 
+let secondaryColour = '#7C77B9';
+
 const styles = StyleSheet.create({
   pageTitle: {
     textAlign: 'center',
     fontSize: '3em',
-    color: '#FAA916'
+    color: `${secondaryColour}`
   },
 
   inputContainer: {
@@ -22,7 +24,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     outline: 'none',
-    backgroundColor: '#FAA916',
+    backgroundColor: `${secondaryColour}`,
     padding: '20px 10px 20px 10px',
     margin: '0 auto',
     width: '50%',
@@ -30,7 +32,7 @@ const styles = StyleSheet.create({
 
   linkInput: {
     outline: 'none',
-    border: 'solid 5px #FAA916',
+    border: `solid 5px ${secondaryColour}`,
     height: '50px',
     fontSize: '20px',
     textIndent: '10px',
@@ -39,7 +41,7 @@ const styles = StyleSheet.create({
 
   langInput: {
     outline: 'none',
-    border: 'solid 5px #FAA916',
+    border: `solid 5px ${secondaryColour}`,
     height: '50px',
     fontSize: '20px',
     width: '6vw',
@@ -48,16 +50,15 @@ const styles = StyleSheet.create({
 
   button: {
     backgroundColor: '#1E2019',
-    color: '#FAA916',
-    fontSize: '2em',
+    color: `${secondaryColour}`,
     padding: '.5rem 1rem',
     border: '1px solid black',
-    borderRadius: '3px',
     fontWeight: '700',
     fontSize: '25px',
     cursor: 'pointer',
     marginTop: '8px',
-    borderRadius: '2px'
+    borderRadius: '2px',
+    outline: 'none'
   },
 
   infoContainer: {
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
 
 class App extends Component {
   state = {
-    link: '',
+    link: 'https://www.youtube.com/watch?v=03EcKq3EYbs',
     lang: 'de',
     // targets: [],
   }

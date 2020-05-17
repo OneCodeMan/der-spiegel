@@ -66,8 +66,10 @@ app.post('/create-pdf', (req, res) => {
           videoID: completeVideoId,
           lang: req.body.lang.toLowerCase(),
         }).then(function(captions) {
-          // console.log(captions);
-          let textValuesFromCaptions = _.map(captions, 'text');
+          let captionsWithoutMusic = _.remove(captions, function(caption) {
+                                      return !caption.text.startsWith('[');
+                                     });
+          let textValuesFromCaptions = _.map(captionsWithoutMusic, 'text');
           // console.log(textValuesFromCaptions); // ['First caption', 'Second Caption', 'etc']
           let transcript = textValuesFromCaptions.join(' '); // First caption Second Caption etc
           let transcriptAsArrayOfWords = transcript.split(" ");
@@ -80,7 +82,7 @@ app.post('/create-pdf', (req, res) => {
             transcript: transcript,
             wordFrequency: wordFrequency, 
           };
-          console.log(transcriptAsObject);
+          // console.log(transcriptAsObject);
 
           pdf.create(pdfTemplate(transcriptAsObject), {}).toFile(finalPdfName, (err) => {
             if(err) {

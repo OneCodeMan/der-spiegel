@@ -24,3 +24,5 @@ yarn-error.log*
 
 .pdf
 secrets.js
+
+.vscode
