@@ -1,61 +1,23 @@
 const express = require('express');
 const router = express.Router();
-
+const helpers = require('./helpers');
+const secrets = require('./secrets');
 const pdfTemplate = require('../../documents');
 const YouTube = require('simple-youtube-api');
-const apiKey = require('./secrets');
-const youtube = new YouTube(apiKey.apiKey);
+const youtube = new YouTube(secrets.apiKey);
 
 const _ = require('lodash');
 
 const pdf = require('html-pdf');
-
 var getSubtitles = require('youtube-captions-scraper').getSubtitles;
-
 const finalPdfName = 'result.pdf';
-
-function getVideoId(link) {
-  let indexBeforeVideoId = link.indexOf("v=");
-  let firstIndexVideoId = indexBeforeVideoId + 2;
-  let lastIndexVideoId = indexBeforeVideoId + 13;
-  let completeVideoId = link.substring(firstIndexVideoId, lastIndexVideoId);
-  return completeVideoId;
-}
-// TODO: Bloated AF. Clean up! This smells.
-function getWordFrequencyMap(words) {
-  let wordFrequency = {};
-  words.forEach(function (key) {
-    if (wordFrequency.hasOwnProperty(key)) {
-      wordFrequency[key]++;
-    } else {
-      wordFrequency[key] = 1;
-    }
-  });
-  // console.log(wordFrequency);
-  var orderedWordFrequency = [];
-  orderedWordFrequency = Object.keys(wordFrequency).map(function (key) {
-    return {
-      name: key,
-      total: wordFrequency[key]
-    };
-  });
-
-  orderedWordFrequency.sort(function (a, b) {
-    return b.total - a.total;
-  });
-  return orderedWordFrequency;
-}
-
-function addLineBreak(captionList) {
-  return captionList.push('<br/><br/>');
-}
 
 router.post('/create-pdf', (req, res) => {
     // console.log(req.body.content);
     //console.log(req.body);
-    let completeVideoId = getVideoId(req.body.link);
+    let completeVideoId = helpers.getVideoId(req.body.link);
     //console.log('complete video Id:', completeVideoId);
-    console.log('request body in /create-pdf:', req.body);
+    // console.log('request body in /create-pdf:', req.body);
 
     youtube.getVideo(req.body.link)
     .then(video => {
@@ -73,7 +35,7 @@ router.post('/create-pdf', (req, res) => {
         let textValuesFromCaptionsChunks = _.chunk(textValuesFromCaptions, 10); // [['test', 'hi'], ['sunny', 'sky', 'etc']]
         // console.log('text values from caption chunks: ', textValuesFromCaptionsChunks);
 
-        textValuesFromCaptionsChunks.forEach(addLineBreak);
+        textValuesFromCaptionsChunks.forEach(helpers.addLineBreak);
         let captionChunksFlattened = _.flatten(textValuesFromCaptionsChunks);
 
         let transcript = captionChunksFlattened.join(' '); // First caption Second Caption etc
@@ -82,7 +44,7 @@ router.post('/create-pdf', (req, res) => {
         let transcriptAsArrayOfWords = transcript.split(" ");
         // console.log(transcriptAsArrayOfWords);
 
-        let wordFrequency = getWordFrequencyMap(transcriptAsArrayOfWords);
+        let wordFrequency = helpers.getWordFrequencyMap(transcriptAsArrayOfWords);
 
         // console.log(transcript);
         let transcriptAsObject = {
@@ -91,6 +53,7 @@ router.post('/create-pdf', (req, res) => {
             transcript: transcript,
             wordFrequency: wordFrequency, 
         };
+        console.log(transcriptAsObject)
         // console.log(transcriptAsObject);
 
         pdf.create(pdfTemplate(transcriptAsObject), {}).toFile(finalPdfName, (err) => {

@@ -88,8 +88,8 @@ const styles = StyleSheet.create({
 
 class App extends Component {
   state = {
-    link: 'https://www.youtube.com/watch?v=03EcKq3EYbs',
-    lang: 'de',
+    link: '',
+    lang: '',
     // targets: [],
   }
 

@@ -8,7 +8,7 @@ return `
           <title>${channel} - ${title}</title>
           <style>
             .container {
-               padding: 0px 12px 8px 12px;
+               padding: 10px 12px 10px 12px;
             }
 
             .title-name {
