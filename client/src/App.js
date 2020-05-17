@@ -122,8 +122,6 @@ class App extends Component {
       .then(() => console.log('success brotha'))
   }
 
-
-
   render() {
     return(
       <div className="App">
