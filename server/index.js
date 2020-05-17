@@ -52,6 +52,10 @@ function getWordFrequencyMap(words) {
   return orderedWordFrequency;
 }
 
+function addLineBreak(captionList) {
+  return captionList.push('<br/><br/>');
+}
+
 app.post('/create-pdf', (req, res) => {
   // console.log(req.body.content);
   //console.log(req.body);
@@ -71,8 +75,19 @@ app.post('/create-pdf', (req, res) => {
                                      });
           let textValuesFromCaptions = _.map(captionsWithoutMusic, 'text');
           // console.log(textValuesFromCaptions); // ['First caption', 'Second Caption', 'etc']
-          let transcript = textValuesFromCaptions.join(' '); // First caption Second Caption etc
+
+          let textValuesFromCaptionsChunks = _.chunk(textValuesFromCaptions, 10); // [['test', 'hi'], ['sunny', 'sky', 'etc']]
+          // console.log('text values from caption chunks: ', textValuesFromCaptionsChunks);
+
+          textValuesFromCaptionsChunks.forEach(addLineBreak);
+          let captionChunksFlattened = _.flatten(textValuesFromCaptionsChunks);
+
+          let transcript = captionChunksFlattened.join(' '); // First caption Second Caption etc
+
+          // THIS IS FOR THE WORD FREQUENCY
           let transcriptAsArrayOfWords = transcript.split(" ");
+          // console.log(transcriptAsArrayOfWords);
+
           let wordFrequency = getWordFrequencyMap(transcriptAsArrayOfWords);
 
           // console.log(transcript);
