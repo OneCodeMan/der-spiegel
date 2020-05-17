@@ -15,7 +15,7 @@ Possible features and improvements:
 - Cleaner code
 
 # Images
-![client](https://imgur.com/OxcM9xl.png)
+![client](https://imgur.com/7zvLz8Q.png)
 
 ![sample video](https://imgur.com/zRxSBw4.png)
 
