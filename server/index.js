@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const app = express();
 
+console.log("index.js is running")
 const port = process.env.PORT || 5000;
 
 app.use(cors());

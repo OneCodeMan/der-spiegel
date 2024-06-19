@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const helpers = require('./helpers');
-const secrets = require('./secrets');
 const pdfTemplate = require('../../documents');
 const YouTube = require('simple-youtube-api');
-const youtube = new YouTube(secrets.apiKey);
+const youtube = new YouTube("AIzaSyC8Cq0g29px8HoGn5ZwT3JmKrq5xOseStQ");
 
 const _ = require('lodash');
 
@@ -13,15 +12,15 @@ var getSubtitles = require('youtube-captions-scraper').getSubtitles;
 const finalPdfName = 'result.pdf';
 
 router.post('/create-pdf', (req, res) => {
-    // console.log(req.body.content);
-    //console.log(req.body);
+    console.log(req.body.content);
+    console.log(req.body);
     let completeVideoId = helpers.getVideoId(req.body.link);
-    //console.log('complete video Id:', completeVideoId);
-    // console.log('request body in /create-pdf:', req.body);
+    console.log('complete video Id:', completeVideoId);
+    console.log('request body in /create-pdf:', req.body);
 
     youtube.getVideo(req.body.link)
     .then(video => {
-        //console.log(`The video's title is ${video.title}`);
+        console.log(`The video's title is ${video.title}`);
         getSubtitles({
         videoID: completeVideoId,
         lang: req.body.lang.toLowerCase(),
@@ -53,7 +52,7 @@ router.post('/create-pdf', (req, res) => {
             transcript: transcript,
             // wordFrequency: wordFrequency, 
         };
-        console.log(transcriptAsObject);
+        // console.log(transcriptAsObject);
         // console.log(transcriptAsObject);
 
         pdf.create(pdfTemplate(transcriptAsObject), {}).toFile(`routes/api/${finalPdfName}`, (err) => {
@@ -64,7 +63,7 @@ router.post('/create-pdf', (req, res) => {
         });
         });
     })
-    .catch(console.log);
+    .catch(console.log(""));
 });
   
 router.get('/fetch-pdf', (req, res) => {
